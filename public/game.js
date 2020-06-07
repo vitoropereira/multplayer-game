@@ -1,3 +1,4 @@
+// Starting the creation of the game, for those who enter to receive the current data.
 export default function createGame() {
 
   const state = {
@@ -12,14 +13,17 @@ export default function createGame() {
   const observers = []
 
   function start() {
-    const frequency = 2000
+    const frequency = 10000
 
-    setInterval(addFruit, frequency)
-  }
+    const starting = setInterval(addFruit, frequency)
    
+    return starting
+
+  }
 
   function subscribe(observerFunction) {
     observers.push(observerFunction)
+
   }
 
   function notifyAll(command) {
@@ -30,6 +34,7 @@ export default function createGame() {
 
   function setState(newState) {
     Object.assign(state, newState)
+
   }
 
   function addPlayer(command) {
@@ -66,7 +71,6 @@ export default function createGame() {
     const fruitX = command ? command.fruitX : Math.floor(Math.random() * state.screen.width)
     const fruitY = command ? command.fruitY : Math.floor(Math.random() * state.screen.height)
 
-
     state.fruits[fruitId] = {
       x: fruitX,
       y: fruitY
@@ -76,7 +80,8 @@ export default function createGame() {
       type: 'add-fruit',
       fruitId: fruitId,
       fruitX: fruitX,
-      fruitY: fruitY
+      fruitY: fruitY,
+      quantityFruit: state.fruits,
     })
   }
 
@@ -91,9 +96,33 @@ export default function createGame() {
     })
   }
 
+  function checkQuantityFruits(command) {
+    const screenSize = state.screen.height * state.screen.width
+    const quantityFruit = Object.keys(command.quantityFruit).length
+    // Screen percentage by quantity of fruits
+    const percentageScreenQuantity = (quantityFruit / screenSize) * 100
+    if (percentageScreenQuantity >= screenSize * 0.5) {
+      notifyAll({
+        type: 'lots-fruit',
+        quantityFruit,
+      })
+      console.log('sou maior que 50% da tela.')
+    }
+
+    if (percentageScreenQuantity <= screenSize * 0.05) {
+      notifyAll({
+        type: 'few-fruit',
+        quantityFruit,
+      })
+      console.log('sou menor que 5% da tela.')
+    }
+
+    console.log(command.type + ' - ' + percentageScreenQuantity + ' >= ' + screenSize * 0.5)
+  }
+
   function movePlayer(command) {
     notifyAll(command)
-    
+
     const acceptedMoves = {
       ArrowUp(player) {
         if (player.y - 1 >= 0) {
@@ -153,6 +182,7 @@ export default function createGame() {
     state,
     setState,
     subscribe,
-    start
+    start,
+    checkQuantityFruits
   }
 }

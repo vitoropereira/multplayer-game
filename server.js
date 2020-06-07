@@ -10,10 +10,11 @@ const sockets = socketio(server)
 app.use(express.static('public'))
 
 const game = createGame()
+
 game.start()
 
 game.subscribe((command) => {
-  console.log(`> Emitting ${command.type}`)
+  // console.log(`> Emitting ${command.type}`)
   sockets.emit(command.type, command)
 })
 
@@ -21,13 +22,13 @@ sockets.on('connection', (socket) => {
   const playerId = socket.id
   console.log(`> Player connected: ${playerId}`)
 
-  game.addPlayer({playerId: playerId})
+  game.addPlayer({ playerId: playerId })
   // console.log(game.state)
 
   socket.emit('setup', game.state)
 
-  socket.on('disconnect', ()=> {
-    game.removePlayer({playerId: playerId})
+  socket.on('disconnect', () => {
+    game.removePlayer({ playerId: playerId })
     console.log(`> Player desconected: ${playerId}`)
   })
 
@@ -35,8 +36,11 @@ sockets.on('connection', (socket) => {
     command.playerId = playerId
     command.type = 'move-player',
 
-    game.movePlayer(command)
+      game.movePlayer(command)
   })
+
+  sockets.emit('starting')
+  
 })
 
 server.listen(3000, () => {
