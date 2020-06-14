@@ -3,21 +3,21 @@
      <meta charset="utf-8">
      <title>Multplayer</title>
 
-     <style>
-       #screen {
-         border: 10px solid #ccc;
-         image-rendering: pixelated;
-         image-rendering: crisp-edges;
-         image-rendering: -moz-crisp-edges;
-         width: 400px;
-         height: 400px;
-       }
-     </style>
-     <script src="/socket.io/socket.io.js"></script>
+      <style>
+        #screen {
+          border: 10px solid #ccc;
+          image-rendering: pixelated;
+          image-rendering: crisp-edges;
+          image-rendering: -moz-crisp-edges;
+          width: 400px;
+          height: 400px;
+        }
+      </style>
+      <script src="/socket.io/socket.io.js"></script>
    </head>
    <body>
      <canvas id="screen" width="10" height="10"></canvas>
-
+     
      <script type="module">
        import createGame from './game.js'
        import createKeyboardListener from './keyboard-listener.js'
